@@ -1,0 +1,7 @@
+services:
+    type: web
+    name: my-nuxt-app
+    env: static
+    build: npm run build
+    static:
+    public: dist
