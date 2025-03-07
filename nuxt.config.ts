@@ -5,14 +5,13 @@ export default defineNuxtConfig({
     '@': resolve(__dirname, '/'),
   },
   
-  
   compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
   css: ['~/assets/main.css'],
-    postcss: {
-      plugins: {
-        tailwindcss: {},
-        autoprefixer: {},
-      },
+  postcss: {
+    plugins: {
+      tailwindcss: {},
+      autoprefixer: {},
     },
+  },
 })

@@ -29,7 +29,7 @@ const isLoading = ref(true);
 const error = ref(null);
 
 definePageMeta({
-  layout: 'header'
+  layout: 'header',
 });
 
 onMounted(async () => {

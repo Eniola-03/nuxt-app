@@ -14,15 +14,13 @@
         <div class="form-group pt-6">
           <label for="email" class="block mb-2">Email</label>
           <input type="email" id="email" v-model="form.email" class="border border-gray-500 rounded-lg w-full py-2 px-3" />
-          <span v-if="!$v.form.email.required && !$v.form.email.email" class="text-red-500 text-sm">Please enter a valid email address</span>
         </div>
         <div class="form-group pt-6">
           <label for="password" class="block mb-2">Password</label>
           <input type="password" id="password" v-model="form.password" class="border border-gray-500 rounded-lg w-full py-2 px-3" />
-          <span v-if="!$v.form.password.required" class="text-red-500 text-sm">Password is required</span>
         </div>
         <div class="flex justify-center pt-12 pb-24">
-          <button type="submit" class="mx-auto text-center p-2 text-white border border-gray-500 rounded-lg w-full md:w-40 bg-my-blue hover:bg-blue-700" :disabled="$v.$invalid">
+          <button type="submit" class="mx-auto text-center p-2 text-white border border-gray-500 rounded-lg w-full md:w-40 bg-my-blue hover:bg-blue-700">
             <span v-if="isLoading">Loading...</span>
             <span v-else>Login</span>
           </button>
@@ -35,28 +33,16 @@
 <script setup>
 import { ref, reactive } from 'vue';
 import { useRouter } from 'vue-router';
-import useVuelidate from '@vuelidate/core';
-import { required, email } from '@vuelidate/validators';
 
 const form = reactive({
-  email: '',
-  password: ''
+  email: 'emeka.akpan@uatdrive.com',
+  password: 'password'
 });
 const error = ref(null);
 const isLoading = ref(false);
 const router = useRouter();
 
-const rules = {
-  email: { required, email },
-  password: { required }
-};
-
-const $v = useVuelidate(rules, form);
-
 const login = async () => {
-  $v.value.$touch();
-  if ($v.value.$invalid) return;
-
   if (isLoading.value) return;
 
   isLoading.value = true;
@@ -72,6 +58,7 @@ const login = async () => {
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
+
 
     const data = await response.json();
     localStorage.setItem('token', data.token); // Store the token in localStorage

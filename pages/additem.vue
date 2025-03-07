@@ -4,20 +4,17 @@
       <div class="mb-4">
         <label for="date" class="mb-2">Date in the future</label>
         <input class="border rounded w-full py-2 px-3" type="text" id="date" v-model="form.futureDate" placeholder="dd/mm/yyyy" />
-        <span v-if="!$v.form.futureDate.required" class="text-red-500 text-sm">Date is required</span>
       </div>
       <div class="mb-4">
         <label for="title" class="mb-2">Title</label>
         <input class="border rounded-lg w-full py-2 px-3" type="text" id="title" v-model="form.title" />
-        <span v-if="!$v.form.title.required" class="text-red-500 text-sm">Title is required</span>
       </div>
       <div class="mb-4">
         <label for="details">Details</label>
         <textarea class="border rounded-lg w-full py-2 px-3" id="details" v-model="form.details" rows="10"></textarea>
-        <span v-if="!$v.form.details.required" class="text-red-500 text-sm">Details are required</span>
       </div>
       <div class="mb-4">
-        <button type="submit" class="mx-auto text-center p-2 text-white border border-gray-500 rounded-lg w-full md:w-40 bg-my-blue hover:bg-blue-700" :disabled="$v.$invalid">
+        <button type="submit" class="mx-auto text-center p-2 text-white border border-gray-500 rounded-lg w-full md:w-40 bg-my-blue hover:bg-blue-700">
           <span v-if="isLoading">Loading...</span>
           <span v-else>Save</span>
         </button>
@@ -29,9 +26,7 @@
 <script setup>
 import { ref, reactive } from 'vue';
 import { useAuth, navigateTo } from '#imports';
-import { useToast } from 'vue-toastification';
-import useVuelidate from '@vuelidate/core';
-import { required } from '@vuelidate/validators';
+
 import { format, parse } from 'date-fns';
 
 definePageMeta({
@@ -41,7 +36,6 @@ definePageMeta({
 const url = "https://eventful-moments-api.onrender.com/api/v1/moment";
 const isLoading = ref(false);
 const _error = ref(null);
-const toast = useToast();
 
 const form = reactive({
   title: "",
@@ -49,17 +43,8 @@ const form = reactive({
   futureDate: "",
 });
 
-const rules = {
-  title: { required },
-  details: { required },
-  futureDate: { required }
-};
-
-const $v = useVuelidate(rules, form);
 
 async function handleSubmit() {
-  $v.value.$touch();
-  if ($v.value.$invalid) return;
 
   if (isLoading.value) return;
 
@@ -86,8 +71,7 @@ async function handleSubmit() {
     }
 
     const data = await response.json();
-    toast.success('Moment added successfully');
-    navigateTo(`/moments/${data.data._id}`);
+    navigateTo(`/moments/${response.data._id}`);
 
     const auth = useAuth();
     auth.value.isAuthenticated = true;

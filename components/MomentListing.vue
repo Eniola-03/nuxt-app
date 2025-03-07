@@ -1,16 +1,16 @@
 <template>
   <div class="p-6">
     <div v-if="isLoading">Loading data...</div>
-    <div v-else-if="error" class="color-red mx-auto text-center">Error loading results: {{ error }}</div>
+    <div v-else-if="error" class="text-red-500 mx-auto text-center">Error loading results: {{ error }}</div>
     <div v-else>
       <div class="flex">
         <div class="bg-light mb-6 md:mb-0 mr-0 md:mr-10 p-6">
           <p class="font-bold">{{ moment.title }}</p>
           <small class="font-regular">{{ truncatedDescription(moment.details) }}</small>
           <div class="flex justify-between pt-2">
-            <button @click="toggleFullDescription" class="text-blue font-regular">{{ showFullDescription ? 'Less' : 'View details' }}</button>
+            <button @click="toggleFullDescription" class="text-my-blue font-regular">{{ showFullDescription ? 'less' : 'View details' }}</button>
             <div class="flex font-regular">
-              <span class="mr-2 text-grey">{{ moment.createdAt }}</span>
+              <span class="mr-2 text-my-grey">{{ moment.createdAt }}</span>
               <span>{{ moment.futureDate }}</span>
             </div>
           </div>
@@ -38,7 +38,7 @@ const router = useRouter();
 
 const toggleFullDescription = () => {
   showFullDescription.value = !showFullDescription.value;
-  if (!showFullDescription.value) {
+  if (showFullDescription.value) {
     router.push(`/profile/${props.moment._id}`);
   }
 };

@@ -4,20 +4,17 @@
       <div class="mb-4">
         <label for="date" class="mb-2">Date in the future</label>
         <input class="border rounded w-full py-2 px-3" type="text" id="date" v-model="form.futureDate" placeholder="dd/mm/yyyy" />
-        <span v-if="!$v.form.futureDate.required" class="text-red-500 text-sm">Date is required</span>
       </div>
       <div class="mb-4">
         <label for="title" class="mb-2">Title</label>
         <input class="border rounded-lg w-full py-2 px-3" type="text" id="title" v-model="form.title" />
-        <span v-if="!$v.form.title.required" class="text-red-500 text-sm">Title is required</span>
       </div>
       <div class="mb-4">
         <label for="details">Details</label>
         <textarea class="border rounded-lg w-full py-2 px-3" id="details" v-model="form.details" rows="10"></textarea>
-        <span v-if="!$v.form.details.required" class="text-red-500 text-sm">Details are required</span>
       </div>
       <div class="mb-4">
-        <button type="submit" class="mx-auto text-center p-2 text-white border border-gray-500 rounded-lg w-full md:w-40 bg-my-blue hover:bg-blue-700" :disabled="$v.$invalid">
+        <button type="submit" class="mx-auto text-center p-2 text-white border border-gray-500 rounded-lg w-full md:w-40 bg-my-blue hover:bg-blue-700" >
           <span v-if="isLoading">Loading...</span>
           <span v-else>Save</span>
         </button>
@@ -29,9 +26,6 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue';
 import { useAuth, navigateTo, useRoute, useRouter } from '#imports';
-import { useToast } from 'vue-toastification';
-import useVuelidate from '@vuelidate/core';
-import { required } from '@vuelidate/validators';
 import { format, parse } from 'date-fns';
 
 definePageMeta({
@@ -40,12 +34,11 @@ definePageMeta({
 
 const route = useRoute();
 const router = useRouter();
-const momentId = route.params.id;
+const momentId = route.params._id;
 const url = `https://eventful-moments-api.onrender.com/api/v1/moment/${momentId}`;
 
 const isLoading = ref(false);
 const error = ref(null);
-const toast = useToast();
 
 const form = reactive({
   title: "",
@@ -53,17 +46,9 @@ const form = reactive({
   futureDate: "",
 });
 
-const rules = {
-  title: { required },
-  details: { required },
-  futureDate: { required }
-};
 
-const $v = useVuelidate(rules, form);
 
 async function onSubmit() {
-  $v.value.$touch();
-  if ($v.value.$invalid) return;
 
   if (isLoading.value) return;
 
@@ -90,14 +75,13 @@ async function onSubmit() {
     }
 
     const data = await response.json();
-    toast.success('Moment updated successfully');
-    router.push(`/moments/${data.data._id}`);
+
+    router.push(`/moments/${response.data._id}`);
 
     const auth = useAuth();
     auth.value.isAuthenticated = true;
   } catch (err) {
     error.value = err.message || "Failed to update item";
-    toast.error(error.value);
   } finally {
     isLoading.value = false;
   }
@@ -131,7 +115,6 @@ onMounted(async () => {
     auth.value.isAuthenticated = true;
   } catch (err) {
     error.value = err.message || "Failed to fetch moment details";
-    toast.error(error.value);
   } finally {
     isLoading.value = false;
   }
